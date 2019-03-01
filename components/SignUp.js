@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,Linking,TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, View,Linking,TouchableOpacity,AlertIOS,Alert} from 'react-native';
 import { TextInput } from 'react-native';
 import { Image } from 'react-native';
 import LogIn from './LogIn';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
-import { withNavigation } from 'react-navigation'; 
+import { withNavigation } from 'react-navigation';
+//import { addItem } from './ItemService';
+//import * as firebase from 'firebase'; 
+//import db from './db';
 //import addItem from './ItemService'
 
 //import * as console from 'console';
@@ -21,20 +24,76 @@ import { withNavigation } from 'react-navigation';
 
 //type Props = {};
 //const {navigate} = this.props.navigation;
+import Firebase from 'firebase';
+ var config = {
+    apiKey: "AIzaSyDSEwhTxPzZxwSJ8jKz0guTD8xc1ohG-l8",
+    authDomain: "projexpo-1786d.firebaseapp.com",
+    databaseURL: "https://projexpo-1786d.firebaseio.com",
+    projectId: "projexpo-1786d",
+    storageBucket: "projexpo-1786d.appspot.com",
+    messagingSenderId: "785160177534"
+
+  };
+var app = Firebase.initializeApp(config);
+export const db = app.database();
+
+var addItem =  (item) => {
+  db.ref('/item').push({
+      Fullname: item,
+      Email: item,
+      Phone: item,
+      Password: item
+      
+  });
+}
 class SignUp extends Component {
  
-     
-
   constructor(props) {
-    super(props)
-
+    super(props);
     this.state = {
       Fullname: '',
       Email:'',
       Phone:'',
-      Password:''
+      Password:'',
+      //error: false
     }
+    //this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
+  handleChange(event) {
+     this.setState({Fullname: event.nativeEvent.text,
+      Email: event.nativeEvent.text,
+      Phone: event.nativeEvent.text,Phone: event.nativeEvent.text});
+    
+    //this.setState({Fullname: text,
+                   // Email:text,
+                    //Phone:text,
+                    //Password:text
+//});
+    //this.setState({Email: text});
+    /*this.setState({
+    
+     
+      Fullname: e.nativeEvent.text,
+      Email: e.nativeEvent.text,
+      Phone: e.nativeEvent.text, 
+      Password: e.nativeEvent.text
+    });*/
+    
+
+  
+}
+  handleSubmit() {
+    addItem(this.state.Fullname,this.state.Email,this.state.Phone,this.state.Password);
+      Alert.alert(
+        'Item saved successfully'
+       );
+  }
+  /*_togglePostCard(){
+    this.setState({
+    isSubmited:false
+   })
+  }*/
   
     /* var config = {
       databaseURL: "<database-url>",
@@ -93,8 +152,7 @@ class SignUp extends Component {
           autoCapitalize="none"
           placeholderTextColor='#808080'
           border-color='yellow'
-          value={this.state.Fullname}
-          onChangeText={(text) => this.setState({Fullname: text})}
+          onChange={this.handleChange.bind(this)}
           
           />
           <TextInput style={styles.input}
@@ -102,8 +160,7 @@ class SignUp extends Component {
           autoCapitalize="none"
           placeholderTextColor='#808080'
           border-color='yellow'
-          value={this.state.Email}
-          onChangeText={(text) => this.setState({Email: text})}
+          onChange={this.handleChange.bind(this)}
           
           />
           <TextInput style={styles.input}
@@ -111,8 +168,7 @@ class SignUp extends Component {
           autoCapitalize="none"
           placeholderTextColor='#808080'
           border-color='yellow'
-          value={this.state.Phone}
-          onChangeText={(text) => this.setState({Phone: text})}
+          onChange={this.handleChange.bind(this)}
           />
           <TextInput style={styles.input}
           placeholder='Password'
@@ -120,7 +176,7 @@ class SignUp extends Component {
           secureTextEntry={true}
           placeholderTextColor='#808080'
           border-color='yellow'
-          onChangeText={(text) => this.setState({Password: text})}
+          onChange={this.handleChange.bind(this)}
           />
           <Text style={styles.termText}>
            I agree to the 
@@ -135,14 +191,14 @@ class SignUp extends Component {
                  </Text>
         </Text>
         <TouchableOpacity
-            style={styles.button} onPress ={() => this.props.navigation.navigate('TabNavigator')} >
+            style={styles.button} onPress={this.handleSubmit} >
             
             <Text>Agree & Sign Up</Text>
           </TouchableOpacity>
        
        </View>
        <Text style={styles.button1}>Already an existing user?</Text>
-       <Text style={styles.button2} onPress={() => this.props.navigation.navigate('LogIn')}> LogIn</Text>
+       <Text style={styles.button2} > LogIn</Text>
    </View>
    </View>
     );
